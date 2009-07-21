@@ -15,8 +15,8 @@ def update(t, msg, quote)
   t.update msg 
 end
 
-def show_timeline(t)
-  name_and_text = t.friends_timeline.map {|e|
+def show_timeline(t, count)
+  name_and_text = t.friends_timeline(:count => count).map {|e|
     [e.user.screen_name, e.text]
   }
   name_and_text.each do |name, text|
@@ -42,9 +42,12 @@ pass = load_pass(trc)
 auth = Twitter::HTTPAuth.new mail, pass
 t = Twitter::Base.new auth
 
+file_name = $0.split("/").pop
+count = file_name.size * 10
 msg = args.join " "
+
 if msg and msg.empty? == false
   update(t, msg, $quote)
 else
-  show_timeline(t)
+  show_timeline(t, count)
 end
