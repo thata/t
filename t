@@ -16,12 +16,20 @@ def update(t, msg, quote)
   t.update msg 
 end
 
+def format_time(created_at)
+  d = DateTime.parse created_at
+  h = d.hour
+  m = d.min
+  # XXX: 日本の時刻にするために+9してる＞＜
+  sprintf "%02d:%02d", d.hour + 9, d.min
+end
+
 def show_timeline(t, count)
   name_and_text = t.friends_timeline(:count => count).map {|e|
-    [e.user.screen_name, e.text]
+    [e.user.screen_name, e.text, format_time(e.created_at)]
   }
-  name_and_text.each do |name, text|
-    puts "#{name}: #{text}"
+  name_and_text.each do |name, text, time|
+    puts "#{time} <#{name}> #{text}"
   end
   puts "[#{count} tweets]"
 end
@@ -31,6 +39,10 @@ def load_mail(trc)
 end
 
 def load_pass(trc)
+  trc["account"]["pass"]
+end
+
+def load_default_count(trc)
   trc["account"]["pass"]
 end
 
